@@ -4,14 +4,14 @@
  */
 
 import { useRef, useEffect, useState } from 'react';
-import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { About } from './components/About';
-import { Services } from './components/Services';
-import { Gallery } from './components/Gallery';
-import { Experience } from './components/Experience';
-import { Contact } from './components/Contact';
-import { AdminPanel } from './components/AdminPanel';
+import { Navbar } from '@/components/Navbar';
+import { Hero } from '@/components/Hero';
+import { About } from '@/components/About';
+import { Services } from '@/components/Services';
+import { Gallery } from '@/components/Gallery';
+import { Experience } from '@/components/Experience';
+import { Contact } from '@/components/Contact';
+import { AdminPanel } from '@/components/AdminPanel';
 
 
 export default function App() {
