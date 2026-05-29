@@ -1,0 +1,6 @@
+{
+  "name": "Bellini Odontología",
+  "description": "High-end landing page for Bellini, an ultra-luxury dental and aesthetic studio.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,34 @@
+{
+  "entities": {
+    "Case": {
+      "title": "Clinical Case",
+      "description": "A clinical case displaying before-after or individual treatment results with technical details and process images.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "type": "string" },
+        "tabLabel": { "type": "string" },
+        "name": { "type": "string" },
+        "desc": { "type": "string" },
+        "challenge": { "type": "string" },
+        "solution": { "type": "string" },
+        "material": { "type": "string" },
+        "duration": { "type": "string" },
+        "beforeImg": { "type": "string" },
+        "afterImg": { "type": "string" },
+        "galleryImages": {
+          "type": "array"
+        },
+        "doctorNotes": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["category", "tabLabel", "name", "desc", "challenge", "solution", "material", "duration", "galleryImages", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/cases/{caseId}": {
+      "schema": "Case",
+      "description": "Clinical cases of Bellini Dental Studio."
+    }
+  }
+}

@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Safety Net: Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions for auth state and primitive validations
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedAdmin() {
+      return isSignedIn() && 
+             request.auth.token.email.lower() == 'contacto@unke.com.ar';
+    }
+
+    function isValidId(id) {
+      return id is string && 
+             id.size() >= 1 && 
+             id.size() <= 128 && 
+             id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Comprehensive case model validation helper
+    function isValidCase(data) {
+      return data.keys().hasAll([
+               'category', 
+               'tabLabel', 
+               'name', 
+               'desc', 
+               'challenge', 
+               'solution', 
+               'material', 
+               'duration', 
+               'galleryImages'
+             ]) &&
+             data.category is string && data.category.size() <= 150 &&
+             data.tabLabel is string && data.tabLabel.size() <= 100 &&
+             data.name is string && data.name.size() <= 300 &&
+             data.desc is string && data.desc.size() <= 1000 &&
+             data.challenge is string && data.challenge.size() <= 2000 &&
+             data.solution is string && data.solution.size() <= 2000 &&
+             data.material is string && data.material.size() <= 300 &&
+             data.duration is string && data.duration.size() <= 150 &&
+             data.galleryImages is list && data.galleryImages.size() <= 30 &&
+             (data.galleryImages.size() == 0 || data.galleryImages[0] is string) &&
+             
+             // Optional/nullable field type and size enforcement
+             (!('beforeImg' in data) || data.beforeImg == null || (data.beforeImg is string && data.beforeImg.size() <= 1000)) &&
+             (!('afterImg' in data) || data.afterImg == null || (data.afterImg is string && data.afterImg.size() <= 1000)) &&
+             (!('doctorNotes' in data) || data.doctorNotes == null || (data.doctorNotes is string && data.doctorNotes.size() <= 3000));
+    }
+
+    // 2. Clinical Cases Rules and Schema Mapping
+    match /cases/{caseId} {
+      // Portfolio display must be publicly readable so patients can view clinical records online.
+      allow get, list: if true;
+
+      // Create operations must be authenticated as our verified admin, use server time, and conform to the full schema validation
+      allow create: if isVerifiedAdmin() && 
+                    isValidId(caseId) && 
+                    isValidCase(incoming());
+
+      // Update operations require admin verification Validate the full entity schema
+      allow update: if isVerifiedAdmin() && 
+                    isValidId(caseId) && 
+                    isValidCase(incoming());
+
+      // Delete operations require absolute administrator authority
+      allow delete: if isVerifiedAdmin() && 
+                    isValidId(caseId);
+    }
+  }
+}

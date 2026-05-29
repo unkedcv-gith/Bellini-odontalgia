@@ -1,0 +1,6 @@
+{
+  "name": "Bellini Odontologia",
+  "description": "Aplicación web para la gestión de la clínica dental Bellini Odontologia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
